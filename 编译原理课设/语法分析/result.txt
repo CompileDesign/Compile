@@ -1,0 +1,24 @@
+(IDENT,"title") 
+(IDENT,"i") 
+(RELOP, "=") 
+(NUMBER, "1") 
+(RELOP, "+") 
+
+(NUMBER, "3.9") 
+(RELOP, ";") 
+(IDENT,"a") 
+(NUMBER, "3") 
+(RELOP, "=") 
+
+(NUMBER, "909") 
+(RELOP, "/") 
+(NUMBER, "6") 
+(IDENT,"bcd") 
+(RELOP, "=") 
+
+(NUMBER, "4") 
+(RELOP, "%") 
+(NUMBER, "9") 
+(RELOP, "-") 
+(NUMBER, "333") 
+
