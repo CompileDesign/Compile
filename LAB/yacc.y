@@ -18,102 +18,101 @@ void yyerror(char *);
 %token <str>    IDENT 
 %left MULTI DIV MOD
 %token WHILE DO IF ELSE BLOCK CONTINUE BREAK CONST INT VOID LT LE EQ NE GT GE  ADD SUB FenHao DouHao LSIGN  RSIGN NOT EQUAL OR RETURN AND
-%token LPAREN RPAREN LBIG RBIG
+%token LPAREN RPAREN LBIG RBIG 
+
+
+
+
 /*********************/
 %%
 CompUnit:
-LPAREN Decl RPAREN
+	LPAREN Decl RPAREN
 | LPAREN  FuncDef RPAREN
 |  CompUnit LPAREN  FuncDef RPAREN
 |  CompUnit LPAREN  Decl RPAREN
 ;
 
 Decl :
-ConstDecl 
+     ConstDecl 
 | VarDecl
 ;
 
 Repeat: 
-DouHao ConstDef 
+      DouHao ConstDef 
 | ;
 ConstDecl:
-CONST BType ConstDef Repeat FenHao ;
+	 CONST BType ConstDef Repeat FenHao ;
 
 BType: INT ;
 
 RR : 
-LSIGN ConstExp RSIGN 
+   LSIGN ConstExp RSIGN 
 | ;
 ConstDef:IDENT RR EQ ConstInitVal ;
 
 RRR : 
-DouHao ConstInitVal
+    DouHao ConstInitVal
 | ; 
 
 ConstInitVal:
-ConstExp   
+	    ConstExp   
 |  LBIG    ConstInitVal RRR  RBIG
 |  LBIG  RBIG;
 
 RRRR: 
-DouHao VarDef 
+    DouHao VarDef 
 | ;
 VarDecl: BType VarDef RRRR FenHao ;
 
 RRRRR:
-LSIGN ConstExp RSIGN
+     LSIGN ConstExp RSIGN
 | ;
 
 RAR :
-LSIGN ConstExp RSIGN
+    LSIGN ConstExp RSIGN
 | ;
 
 VarDef:
-IDENT  RRRRR
+      IDENT  RRRRR
 | IDENT  RAR EQ InitVal ;
 
 RBR:
-DouHao InitVal
+   DouHao InitVal
 | ;
 
-InitVal: 
-Exp 
+InitVal: Exp 
 | LBIG  RBIG
 | LBIG  InitVal RBR  RBIG;
 
-FuncDef: 
-FuncType IDENT  LPAREN [FuncFParams] RPAREN Block  
+FuncDef:  FuncType IDENT  LPAREN [FuncFParams] RPAREN Block  
 | FuncType IDENT  LPAREN  RPAREN Block ;
 
-FuncType: 
-VOID
+FuncType: VOID
 | INT 
 ;
 
-RCR :
-FenHao FuncFParam
+RCR : FenHao FuncFParam
 | ;
 
 FuncFParams: FuncFParam RCR ;
 
 RDR:
-LSIGN Exp RSIGN
+   LSIGN Exp RSIGN
 | ;
-FuncFParam : 
-BType IDENT 
+FuncFParam :  BType IDENT 
 | BType IDENT  LSIGN RSIGN RDR ;
 
 RER:
-BlockItem
+   BlockItem
 | ;
 
 Block : LBIG RER RBIG ;
 
 BlockItem: Decl 
-| Stmt ;
+	 | Stmt ;
 
 Stmt :LVal EQ Exp FenHao 
-| Exp FenHao  
+     | Exp FenHao  
 | Block 
 | IF LPAREN Cond RPAREN Stmt ELSE Stmt  
 | IF LPAREN Cond RPAREN Stmt  
@@ -129,37 +128,37 @@ Exp : AddExp ;
 Cond : LOrExp;
 
 RER:
-LSIGN Exp RSIGN
+   LSIGN Exp RSIGN
 | ;
 LVal : IDENT  RER ;
 
 PrimaryExp: 
-LPAREN Exp RPAREN
+	  LPAREN Exp RPAREN
 | LVal 
 | Number;
 
 Number: 
-IntConst ;
+      IntConst ;
 
 
 UnaryExp: 
-PrimaryExp 
+	PrimaryExp 
 | IDENT  LPAREN FuncRParams RPAREN 
 | IDENT  LPAREN  RPAREN   
 | UnaryOp UnaryExp ;
 
 UnaryOp : 
-ADD 
+	ADD 
 | SUB
 | NOT ;
 
 RFR:
-DouHao  Exp
+   DouHao  Exp
 | 
 ;
 
 FuncRParams: Exp RFR ;
- 
+	    
  MulExp: 
  UnaryExp 
  | MulExp  MULTI  UnaryExp 
@@ -184,11 +183,11 @@ FuncRParams: Exp RFR ;
  | EqExp  NE      RelExp ;
 
 LAndExp: 
-EqExp 
+       EqExp 
 | LAndExp AND EqExp;
 
 LOrExp: 
-LAndExp 
+      LAndExp 
 | LOrExp OR LAndExp ;
 
 ConstExp: AddExp; 
