@@ -52,16 +52,16 @@ extern int yydebug;
     MULTI = 262,
     DIV = 263,
     MOD = 264,
-    WHILE = 265,
-    DO = 266,
-    IF = 267,
-    ELSE = 268,
-    BLOCK = 269,
-    CONTINUE = 270,
-    BREAK = 271,
-    CONST = 272,
-    INT = 273,
-    VOID = 274,
+    INT = 265,
+    VOID = 266,
+    WHILE = 267,
+    DO = 268,
+    IF = 269,
+    ELSE = 270,
+    BLOCK = 271,
+    CONTINUE = 272,
+    BREAK = 273,
+    CONST = 274,
     LT = 275,
     LE = 276,
     EQ = 277,
@@ -93,16 +93,16 @@ extern int yydebug;
 #define MULTI 262
 #define DIV 263
 #define MOD 264
-#define WHILE 265
-#define DO 266
-#define IF 267
-#define ELSE 268
-#define BLOCK 269
-#define CONTINUE 270
-#define BREAK 271
-#define CONST 272
-#define INT 273
-#define VOID 274
+#define INT 265
+#define VOID 266
+#define WHILE 267
+#define DO 268
+#define IF 269
+#define ELSE 270
+#define BLOCK 271
+#define CONTINUE 272
+#define BREAK 273
+#define CONST 274
 #define LT 275
 #define LE 276
 #define EQ 277
@@ -126,23 +126,6 @@ extern int yydebug;
 #define RBIG 295
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
-{
-#line 8 "yacc.y" /* yacc.c:1909  */
-
-  int num;
-  double number;
-  char * str;
-
-#line 140 "y.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
 
 
 extern YYSTYPE yylval;

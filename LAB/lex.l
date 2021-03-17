@@ -1,8 +1,13 @@
 %{
-   #include <stdio.h>
-   #include "yacc.tab.h"
-   void yyerror(char *);
-   extern YYSTYPE yylval;
+   #include "main.h"		
+   #include "y.tab.h"
+   void comment();
+   extern "C"		
+    {						
+	int yywrap(void);
+	int yylex(void);	
+    }  
+
 %}
 
 delim                  [\t \n]
@@ -14,80 +19,85 @@ number                 {dec_digit}*(0)*(\.{dec_digit}+)?(E[+-]?{dec_digit}+)?
 hex_digit              (0[xX][0-9A-Fa-f]+)
 oct_digit              (0[0-7]+)
 
- 
-/*   状态（或条件）定义可以定义在这里 
- *   INITIAL是一个默认的状态，不需要定义
- */
 
-%s COMMENT
-%s COMMENT2
 %%
- 
-<INITIAL>"/*"                                           {BEGIN COMMENT;}
-<COMMENT>"*/"                                           {BEGIN INITIAL;}
-<COMMENT>.|\n                                           {;}
-<INITIAL>"//"                                           {BEGIN COMMENT2;}
-<COMMENT2>\n                                        {BEGIN INITIAL;}
-<COMMENT2>.                                             {;}
- 
- /* ECHO是一个宏，相当于 fprintf(yyout, "%s", yytext)*/
- 
-<INITIAL>{ws}                      {;}
-<INITIAL>while                     {return WHILE;}
-<INITIAL>do                       {return DO;}
-<INITIAL>if                       {return IF;}
-<INITIAL>else                     {return ELSE;}
-<INITIAL>block                    {return BLOCK;}
-<INITIAL>continue                 {return CONTINUE;}
-<INITIAL>break                    {return BREAK;}
-<INITIAL>const                    {return CONST;}
-<INITIAL>int                      {return INT;}
-<INITIAL>void                     {return VOID;}
-<INITIAL>{ident}                  { /*scanf(yytext,"%s",&yylval.str);*/return IDENT;}
-<INITIAL>{number}                 {/*scanf(yytext,"%d",&yylval.num);*/return  IntConst;}
-<INITIAL>{hex_digit}              {/*scanf(yytext,"%d",&yylval.num);*/return  HEX_NUMBER;}
-<INITIAL>{oct_digit}              {/*scanf(yytext,"%d",&yylval.num);*/return  OCT_NUMBER;}
-<INITIAL>"<"                      {return LT;}
-<INITIAL>"<="                     {return LE;}
-<INITIAL>"="                      {return EQ;}
-<INITIAL>"!="                     {return NE;}
-<INITIAL>">"                      {return GT;}
-<INITIAL>">="                     {return GE;}
-<INITIAL>"("                      {return LPAREN;}
-<INITIAL>")"                      {return RPAREN;}
-<INITIAL>"{"                      {return LBIG;}
-<INITIAL>"}"                      {return RBIG;}
-<INITIAL>"+"                      {return ADD;}
-<INITIAL>"-"                      {return SUB;}
-<INITIAL>"*"                      {return MULTI;}
-<INITIAL>"/"                      {return DIV;}
-<INITIAL>";"                      {return FenHao;}
-<INITIAL>"%"                      {return MOD;}
-<INITIAL>","                      {return DouHao;}
-<INITIAL>"["                      {return LSIGN;}
-<INITIAL>"]"                      {return RSIGN;}
-<INITIAL>"!"                      {return NOT;}
-<INITIAL>"=="                     {return EQUAL;}
-<INITIAL>"&&"                     {return AND;}
-<INITIAL>"||"                     {return OR;}
-<INITIAL>"return"                 {return RETURN;}
-<INITIAL>.                        {return ERRORCHAR;}
+"/*"			{ comment();/*注释*/}
+"//"[^\n]*              { /* consume //-comment */ }
+"while"                 {return (WHILE);}
+"do"                    {return (DO);}
+"if"                    {return (IF);}
+"else"                  {return (ELSE);}
+"block"                 {return (BLOCK);}
+"continue"              {return (CONTINUE);}
+"break"                 {return (BREAK);}
+"const"                 {return (CONST);}
+"int"                   {return (INT);}
+"void"                  {return (VOID);}
+"<="                    {return (LE);}
+"<"                      {return (LT);}
+"="                      {return (EQ);}
+"!="                     {return NE;}
+">"                      {return GT;}
+">="                     {return GE;}
+"("                      {return LPAREN;}
+")"                      {return RPAREN;}
+"{"                      {return LBIG;}
+"}"                      {return RBIG;}
+"+"                      {return ADD;}
+"-"                      {return SUB;}
+"*"                      {return MULTI;}
+"/"                      {return DIV;}
+";"                      {return FenHao;}
+"%"                      {return MOD;}
+","                      {return DouHao;}
+"["                      {return LSIGN;}
+"]"                      {return RSIGN;}
+"!"                      {return NOT;}
+"=="                     {return EQUAL;}
+"&&"                     {return AND;}
+"||"                     {return OR;}
+"return"                 {return RETURN;}
+.                        {/**/}
+
+{ident}                 {
+                                yylval.str = yytext;
+                                return IDENT;
+                        }
+
+{number}                {
+                                 yylval.number = atoi(yytext);
+                                 return IntConst;
+                        }
+
+{hex_digit}             {      
+                                 yylval.number = atoi(yytext);
+                                 return IntConst;
+                        }
+
+
+{oct_digit}             {
+                                 yylval.number = atoi(yytext);
+                                 return IntConst;
+                        }
+
 %%
 
 
-main(argc,argv)
-int argc;
-char **argv;
+
+void comment() {
+	char c, prev = 0;
+	
+	while (cin >> c)      /* (EOF maps to 0) */
+	{
+		if (c == '/' && prev == '*')
+			return;
+		prev = c;
+	}
+	printf("unterminated comment");
+}
+
+int yywrap(void)
 {
-   if(argc > 1){
-         FILE * file ; 
-         file = fopen(argv[1],"r");
-         if(!file){
-             fprintf(stderr,"error open %s",argv[1]);
-             exit(1); 
-           }
-       yyin = file ;
-    }
-
-    yylex();
+	puts("-----the file is end");
+	return 1;								//返回1表示读取全部结束。如果要接着读其它文件，可以这里fopen该文件，文件指针赋给yyin，并返回0
 }
